@@ -1,7 +1,7 @@
 import os
 
 class Config(object):
-	pass
+	SECRET_KEY = 'Enrique'
 
 class DevelopmentConfig(Config):
 	DEBUG = True

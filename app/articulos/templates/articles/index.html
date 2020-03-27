@@ -1,0 +1,85 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+	<div class="row">
+		<div class="col s10">
+			<h4 class="center-align">Listado de Articulos</h4>
+    	</div>
+    	<div class="col s2">
+    		<p><a href="create" class="waves-effect waves-light btn">Crear</a></p>
+    	</div>
+    	<div class="col s12">
+    		<table class="striped highlight centered responsive-table center-align">
+    			<thead>
+          			<tr>
+              			<th>Titulo</th>
+              			<th>Contenido</th>
+              			<th>Categoria</th>
+              			<th>Creado por</th>
+              			<th colspan="2">Opciones</th>
+          			</tr>
+        		</thead>
+
+        		<tbody>
+          			{% for article in articles.items %}
+          				<tr>
+          					<td>{{article.title}}</td>        
+          					<td>{{article.content}}</td>   
+          					<td>{{article.username}}</td>          	
+          					<td>{{article.name }}</td>
+          					<td><a href="{{article.id}}/edit"><i class="material-icons">edit</i></a></td>
+          					<td><a href="{{article.id}}/destroy"><i class="material-icons">delete</i></a></td>
+          				</tr>  
+          				{% else %}
+        					<td colspan="5">No ay más lista de registros</td>       				
+          			{% endfor %}
+        		</tbody>
+      		</table>
+      		   
+      		{# Aqui la paginacion ya modificada para los datos #}
+      		{# 
+      			.has_prev "true Verdadero si hay al menos una página más antes de la actual" 
+      			.iter_pages() "Todas las pagina"
+      			.page "pagina actual"
+      			.has_next "true Verdadero si hay al menos una página más después de la actual"
+      		#}
+  			<ul class="pagination center-align">
+  				{% if articles.has_prev %}
+
+					<li class="waves-effect"><a href="{{ articles.prev_num}}"><i class="material-icons">chevron_left</i></a></li>
+
+					{% else %}
+
+						<li class="disabled"><i class="material-icons">chevron_left</i></li>
+  				
+  				{% endif %}    
+
+				{% for page_num in articles.iter_pages() %}
+					{% if page_num %}
+
+						{% if page_num != articles.page %}
+
+							<li class="waves-effect"><a href="{{page_num}}">{{page_num}}</a></li>
+
+							{% else %}
+								<li class="active disabled" style='color: #444;display: inline-block;font-size: 1.2rem;padding: 0 10px;line-height: 30px;'>{{page_num}}</li>
+
+						{% endif %}
+
+						{% else %}
+							<li class="disabled" style='color: #444;display: inline-block;font-size: 1.2rem;padding: 0 10px;line-height: 30px;'>
+           						…
+       						</li>
+					{% endif %}
+				{% endfor %}    			
+
+				{% if articles.has_next %}
+					<li class="waves-effect"><a href="{{ articles.next_num}}"><i class="material-icons">chevron_right</i></a></li>
+					{% else %}
+						<li class="disabled"><i class="material-icons">chevron_right</i></li>
+				{% endif %}
+    			
+  			</ul>            
+    	</div>
+	</div>
+{% endblock %}

@@ -1,0 +1,37 @@
+<nav>
+  <div class="nav-wrapper">
+    <a href="#!" class="brand-logo">Logo</a>
+    <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+	{% if session["username"] %}
+		<ul id="nav-mobile" class="right hide-on-med-and-down">
+      		{% if session["type"] == "admin"%}
+            <li><a href="{{url_for('usuarios.usuarios')}}">Usuarios</a></li>
+          {% endif %}          
+          <li><a href="{{url_for('categorias.categorias')}}">Categorias</a></li>
+          <li><a href="{{url_for('articulos.articulos')}}">Articulos</a></li>
+      		<!-- Dropdown Trigger -->
+      		<li><a class="dropdown-trigger" href="#!" data-target="dropdown1">{{session["username"]}}<i class="material-icons right">arrow_drop_down</i></a></li>
+    </ul>    	
+    <ul id="dropdown1" class="dropdown-content">
+  			<li><a href="#!">-</a></li>  
+  			<li class="divider"></li>
+  			<li><a class="justify-align" href="{{url_for('usuarios.logout')}}">Cerrar Sección</a></li>
+		</ul>
+		<ul class="sidenav" id="mobile-demo">
+        <li><a href="{{url_for('usuarios.usuarios')}}">Usuarios</a></li>
+        <li><a href="{{url_for('categorias.categorias')}}">Categorias</a></li>
+        <li><a href="{{url_for('articulos.articulos')}}">Articulos</a></li>
+        <li><a class="justify-align" href="{{url_for('usuarios.logout')}}">Cerrar Sección</a></li>
+  	</ul>
+		{% else %}
+			<ul id="nav-mobile" class="right hide-on-med-and-down">
+      			<li><a href="{{url_for('auth.login')}}">Login</a></li>
+      			<li><a href="{{url_for('auth.register')}}">Register</a></li>
+      		</ul>   
+      		<ul class="sidenav" id="mobile-demo">
+    			<li><a href="{{url_for('auth.login')}}">Login</a></li>
+    			<li><a href="{{url_for('auth.register')}}">Register</a></li>
+  			</ul>
+	{% endif %}  
+  </div>
+</nav>

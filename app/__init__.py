@@ -41,5 +41,9 @@ def create_app():
     from .articulos import article as article
     app.register_blueprint(article)
 
+    # BluePrints tag
+    from .tags import tags as tags
+    app.register_blueprint(tags)
+
 
     return app

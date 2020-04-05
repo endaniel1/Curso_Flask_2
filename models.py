@@ -33,7 +33,7 @@ class Categories(db.Model):
 	name=db.Column(db.String(50),nullable=True)
 	articles=db.relationship("Articles", backref='categories')
 
-	"""docstring for ClassName"""
+	#Aqui iniciamos nuestro construtor para q tenga los datos
 	def __init__(self, name):
 		self.name=name
 
@@ -41,16 +41,39 @@ class Articles(db.Model):
 	id=db.Column(db.Integer,primary_key=True)
 	title=db.Column(db.String(50),nullable=True)
 	content=db.Column(db.Text())
-
-	user_id=db.Column(db.Integer,db.ForeignKey("users.id",ondelete='CASCADE'),nullable=True)
-	category_id=db.Column(db.Integer,db.ForeignKey("categories.id",ondelete='CASCADE'),nullable=True)
+	user_id=db.Column(db.Integer,db.ForeignKey("users.id",ondelete="CASCADE"),nullable=True)
+	category_id=db.Column(db.Integer,db.ForeignKey("categories.id",ondelete="CASCADE"),nullable=True)
+	tag_id=db.relationship("Tags",secondary="article_tag")
+	images=db.relationship("Images",backref="articles",lazy="dynamic")
 
 	def __init__(self, title, content,user_id,category_id):		
 		self.title = title
 		self.content = content
 		self.user_id = user_id
 		self.category_id = category_id
-		
 
+class Tags(db.Model):
+	id=db.Column(db.Integer,primary_key=True)
+	name=db.Column(db.String(50),nullable=True)
+	articles=db.relationship("Articles",secondary="article_tag")
+
+	def __init__(self, name):
+		self.name=name
+
+class ArticleTag(db.Model):
+	__tablename__ = 'article_tag'
+	id=db.Column(db.Integer,primary_key=True)
+	article_id=db.Column(db.Integer,db.ForeignKey("articles.id",ondelete='CASCADE'),nullable=True) 
+	tag_id=db.Column(db.Integer,db.ForeignKey("tags.id",ondelete='CASCADE'),nullable=True) 
+	
+
+class Images(db.Model):
+	id=db.Column(db.Integer,primary_key=True)
+	name=db.Column(db.String(50),nullable=True)	
+	article_id=db.Column(db.Integer,db.ForeignKey("articles.id",ondelete="CASCADE"),nullable=True)
 		
+	def __init__(self, name,article_id):
+		self.name=name
+		self.article_id=article_id
+
 		

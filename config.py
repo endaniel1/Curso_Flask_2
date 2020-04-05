@@ -1,8 +1,5 @@
-import os
-
 class Config(object):
-	SECRET_KEY = 'Enrique'
-
+	SECRET_KEY = 'Enrique'	
 
 class DevelopmentConfig(Config):
 	DEBUG = True

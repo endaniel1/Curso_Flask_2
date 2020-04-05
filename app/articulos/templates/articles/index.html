@@ -24,9 +24,9 @@
           			{% for article in articles.items %}
           				<tr>
           					<td>{{article.title}}</td>        
-          					<td>{{article.content}}</td>   
-          					<td>{{article.username}}</td>          	
-          					<td>{{article.name }}</td>
+          					<td>{{article.content}}</td>
+          					<td>{{article.name}}</td>
+                    <td>{{article.username}}</td>    
           					<td><a href="{{article.id}}/edit"><i class="material-icons">edit</i></a></td>
           					<td><a href="{{article.id}}/destroy"><i class="material-icons">delete</i></a></td>
           				</tr>  

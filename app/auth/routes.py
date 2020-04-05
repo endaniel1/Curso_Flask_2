@@ -19,6 +19,7 @@ def login():
 		user=Users.query.filter_by(username=username).first()
 
 		if user is not None and user.verify_password(password):	
+			session["id"]=user.id
 			session["username"]=user.username
 			session["type"]=user.type
 			success_message="Inicio de Sección Correctamente!"

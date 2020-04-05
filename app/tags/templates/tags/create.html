@@ -1,0 +1,28 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+	<div class="row">
+		<div class="col s12">
+			<h4 class="center-align">Crear de Tags</h4>
+		</div>
+		{% from "layouts/input.html" import render_field %}
+		<form class="col s12" method="POST" accept-charset="utf-8">
+			<input type="hidden" name="csrf_token" value="{{csrf_token()}}">
+			<div class="row">
+				<div class="col s12">
+					<div class="row col s6 offset-s3 center-aling">
+						<div class="input-field col s12">
+							<i class="material-icons prefix">account_circle</i>
+							{{ render_field(form.name,id="name",class="validate",required="required",autocomplete="off") }}
+							<label for="name">Nombre de Tag</label>
+						</div>
+						<div class="input-field col s12 center-align">
+							<button type="submit" class="btn-small green"><i class="material-icons left">save</i>Registrar</button>        			
+        					<button type="reset" class="btn-small red"><i class="material-icons left">refresh</i>Reset</button>
+        				</div>
+					</div>
+				</div>
+			</div>
+		</form>
+	</div>				
+{% endblock %}

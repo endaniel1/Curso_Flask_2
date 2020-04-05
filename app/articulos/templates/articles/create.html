@@ -6,7 +6,7 @@
 			<h4 class="center-align">Crear de Articulo</h4>
 		</div>
 		{% from "layouts/input.html" import render_field %}
-		<form class="col s12" method="POST" accept-charset="utf-8">
+		<form class="col s12" method="POST" enctype="multipart/form-data" accept-charset="utf-8">
 			<input type="hidden" name="csrf_token" value="{{csrf_token()}}">
 			<div class="row">
 				<div class="col s12">
@@ -18,13 +18,28 @@
 						</div>
 						<div class="input-field col s12">
 							<i class="material-icons prefix">account_circle</i>
-							{{ render_field(form.content,id="content",class="validate",required="required",autocomplete="off") }}
+							{{ render_field(form.content,id="content",class="validate materialize-textarea",required="required",autocomplete="off") }}
 							<label for="content">Contenido</label>
 						</div>
 						<div class="input-field col s12">
 							<i class="material-icons prefix">account_circle</i>
 							{{ render_field(form.category,id="category",class="validate",required="required",autocomplete="off") }}
 							<label for="category">Categoria</label>
+						</div>
+						<div class="input-field col s12">
+							<i class="material-icons prefix">account_circle</i>
+							{{ render_field(form.tag,id="tag",class="validate",required="required",autocomplete="off") }}
+							<label for="category">Tags</label>
+						</div>
+						<div class="file-field input-field col s12">
+							<div class="btn">
+								<span>Imagen</span>
+								{{ render_field(form.image,id="images",multiple="multiple",required="required",autocomplete="off") }}
+							</div>
+							<div class="file-path-wrapper">
+								<input class="file-path validate" type="text" placeholder="Selecione una imagen">
+							</div>
+							
 						</div>
 						<div class="input-field col s12 center-align">
 							<button type="submit" class="btn-small green"><i class="material-icons left">save</i>Registrar</button>        			

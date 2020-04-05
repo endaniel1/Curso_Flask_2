@@ -67,10 +67,8 @@ def edit(id=id):
 
 	if request.method == "POST" and form_category.validate():
 
-		categorynuevo=Categories(form_category.name.data)
-
 		db.session.query(Categories).filter(Categories.id==id).update({
-				"name":categorynuevo.name
+				"name":form_category.name.data
 			}, synchronize_session = False)
 
 		db.session.commit()

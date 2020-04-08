@@ -1,5 +1,5 @@
 from flask_sqlalchemy import SQLAlchemy
-
+from sqlalchemy.orm import backref
 import datetime
 
 from flask_bcrypt import Bcrypt
@@ -13,7 +13,7 @@ class Users(db.Model):
 	password=db.Column(db.String(80),nullable=True)
 	email=db.Column(db.String(50),unique=True,nullable=True)
 	type=db.Column(db.Enum("visitor","admin"),nullable=False,server_default="visitor")
-	articles=db.relationship("Articles", backref='users')
+	articles=db.relationship("Articles", backref='users',cascade="all, delete-orphan")
 
 	#Aqui iniciamos nuestro construtor para q tenga los datos
 	def __init__(self, username, password, email,type):
@@ -31,7 +31,7 @@ class Users(db.Model):
 class Categories(db.Model):
 	id=db.Column(db.Integer,primary_key=True)
 	name=db.Column(db.String(50),nullable=True)
-	articles=db.relationship("Articles", backref='categories')
+	articles=db.relationship("Articles", backref='categories',cascade="all, delete-orphan")
 
 	#Aqui iniciamos nuestro construtor para q tenga los datos
 	def __init__(self, name):
@@ -44,7 +44,7 @@ class Articles(db.Model):
 	user_id=db.Column(db.Integer,db.ForeignKey("users.id",ondelete="CASCADE"),nullable=True)
 	category_id=db.Column(db.Integer,db.ForeignKey("categories.id",ondelete="CASCADE"),nullable=True)
 	tag_id=db.relationship("Tags",secondary="article_tag")
-	images=db.relationship("Images",backref="articles",lazy="dynamic")
+	images=db.relationship("Images",backref="articles",cascade="all, delete-orphan")
 
 	def __init__(self, title, content,user_id,category_id):		
 		self.title = title
@@ -71,9 +71,8 @@ class Images(db.Model):
 	id=db.Column(db.Integer,primary_key=True)
 	name=db.Column(db.String(50),nullable=True)	
 	article_id=db.Column(db.Integer,db.ForeignKey("articles.id",ondelete="CASCADE"),nullable=True)
-		
+	
+
 	def __init__(self, name,article_id):
 		self.name=name
 		self.article_id=article_id
-
-		

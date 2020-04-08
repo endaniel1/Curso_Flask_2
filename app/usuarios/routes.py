@@ -7,6 +7,8 @@ from models import db
 from models import Users
 from app import forms
 
+from app import helpers
+
 @users.before_request
 def before_request():
 	if "username" not in session:
@@ -57,6 +59,7 @@ def destroy(id=id):
 	user=Users.query.filter_by(id=id).first()
 
 	if user is not None:
+		helpers.deleteImagen(user.articles)		
 		db.session.delete(user)
 		db.session.commit()
 		message="Usuario Eliminado!"

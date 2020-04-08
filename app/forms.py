@@ -1,10 +1,10 @@
 from wtforms import Form 
-from wtforms import StringField,TextField,PasswordField,validators,TextAreaField
+from wtforms import StringField,TextField,PasswordField,TextAreaField
 from wtforms import SelectMultipleField,SelectField,MultipleFileField
 from wtforms.fields.html5 import EmailField
-from flask_wtf.file import FileField,FileAllowed
+from wtforms import validators
 
-from models import Categories
+from .articulos import form as file
 
 class LoginForm(Form):
 	username = StringField("Nombre de Usuario",[
@@ -39,23 +39,27 @@ class CreateCategory(Form):
 			validators.length(min=3,max=25,message="Ingrese Un Name Valido!.")
 		])
 
-class CreateArticle(Form):
+class CreateArticleAdmin(Form):
 	title =	StringField("Titulo",[
 			validators.Required(message="El Title Es Requerido!."),
 			validators.length(min=3,max=25,message="Ingrese Un Title Valido!.")
 		])
 	content = TextAreaField("Contenido",[
-				validators.length(min=3,message="Ingrese Un content Más Largo!.")
+				validators.length(min=3,message="Ingrese Un Content Más Largo!.")
 			])
 
 	#Aqui las categoria en un select	
-	category = SelectField("Tipo",choices=[],coerce=int)
+	category = SelectField("Tipo",choices=[],coerce=int,validators=[validators.Required(message=('El Categoria Es Requerido!.'))])
 	#Aqui los Tags en un select	
-	tag = SelectMultipleField("Tipo",choices=[],coerce=int)
+	tag = SelectMultipleField("Tipo",choices=[],coerce=int,validators=[validators.Required(message=('El Tag Es Requerido!.'))])
+
+class CreateArticleImagen(CreateArticleAdmin):
 
 	image = MultipleFileField('Imagen', validators=[
-		FileAllowed(['jpg', 'png'], 'Solo se permiten imágenes')
+		validators.InputRequired(message="El Campo Es Requerido!."),
+		file.MultiFileAllowed(['jpg', 'png', 'jpeg', 'tif'])
     ])
+
 class CreateTag(Form):
 	name = StringField("Nombre de Tag",[
 			validators.Required(message="El Name Es Requerido!."),

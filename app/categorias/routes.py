@@ -7,7 +7,7 @@ from flask import flash #Aqui para los mensajes
 from models import db
 from models import Categories
 from app import forms
-
+from app import helpers
 
 @category.before_request
 def before_request():
@@ -48,8 +48,10 @@ def create_category():
 @category.route("/categorias/<int:id>/destroy",methods=["GET"])
 def destroy(id=id):
 	category=Categories.query.filter_by(id=id).first()
-
+	
 	if category is not None:
+		helpers.deleteImagen(category.articles)		
+	
 		db.session.delete(category)
 		db.session.commit()
 		message="Categoria Eliminada!"

@@ -17,6 +17,7 @@ from app import forms
 
 from werkzeug.datastructures import CombinedMultiDict
 from run import app
+import datetime
 
 @article.route("/articulos/",methods=["GET"])
 @article.route("/articulos/<int:page>",methods=["GET"])
@@ -35,7 +36,7 @@ def articulos(page=1):
 @article.route("/articulos/create",methods=["GET","POST"])
 def create_article():
 	title="Articulos Create"
-	form_article=forms.CreateArticle(CombinedMultiDict((request.files, request.form)))
+	form_article=forms.CreateArticleImagen(CombinedMultiDict((request.files, request.form)))
 
 	#Aqui le envios las categoria y tag a mi select	
 	form_article.category.choices = [(category.id, category.name) for category in Categories.query.all()]
@@ -49,26 +50,32 @@ def create_article():
 							user_id,
 							form_article.category.data)
 
-		db.session.add(article)
+		db.session.add(article)#Creamos nuestro articulo
+		#Aqui lo asocioamos a nuestros tags
 		for tag in form_article.tag.data:
 			article.tag_id.append(Tags.query.get(tag))
+		#Aqui  guardamos y creamos nuestra imagenes de nuestro articulo
+		for imagen in form_article.image.data:
+			time = datetime.datetime.today()#Obtenemos la fecha y hora 
+			hora = "{}-{}-{}-{}".format(time.hour,
+										time.minute,
+										time.second,
+										time.microsecond)#Formatemos la hora
+			file=imagen #Guardmos nuestra imagen
+			#Aqui creamos el nombre de la imagen nueva
+			image_name = "ImagenFlask_{}_{}.{}".format(datetime.date.today(),hora,
+														file.filename.split(".")[1])
 
-		print(form_article.image.data)
-		#for imagen in form_article.image:
-		#	print(imagen)
-		"""
-		if form_article.image.data:
-			file=form_article.image.data
-			image_name = secure_filename(file.filename)
+			#Aqui creamos la ruta en donde va a estar la imagen y la guardarmos posteriormente 
 			images_dir = os.path.dirname(os.path.abspath(__file__))+"/templates/images"
 			os.makedirs(images_dir, exist_ok=True)
 			file_path = os.path.join(images_dir, image_name)
 			file.save(file_path)
-			#print(images_dir)
+			#Creamos Aqui nuestra imagen para guardarla en la base de datos
 			image=Images(image_name,article.id)
 			db.session.add(image)
-		"""
-		##db.session.commit()
+		
+		db.session.commit()
 		success_message="Articulo Registrada Correctamente! "
 		flash(success_message)
 
@@ -81,15 +88,23 @@ def create_article():
 
 @article.route("/articulos/<int:id>/destroy",methods=["GET"])
 def destroy(id=id):
-	article=Articles.query.filter_by(id=id).first()
-
+	article=Articles.query.filter_by(id=id).first()	
+	
 	if article is not None:
+		images=article.images
 		db.session.delete(article)
-		db.session.commit()
+		#Directorio en donde se encuentra sus imagenes		
+		dir_imagenes=os.path.dirname(os.path.abspath(__file__))+"/templates/images/"
+		#Aqui las buscamos y la eliminamos
+		for image in images:
+			#Aqui eliminamos las imagenes
+			os.remove("{}{}".format(dir_imagenes,image.name))
+			
+		db.session.commit()#Guardamos los cambio q hacemos en nuestra base de datos
 		message="Articulo Eliminado!"
 	else:
 		message="Articulo No Existe!"
-		
+
 	flash(message)
 	return redirect(url_for("articulos.articulos"))
 
@@ -97,7 +112,7 @@ def destroy(id=id):
 def edit(id=id):
 	title="Articulos Edit"
 	article=Articles.query.filter(Articles.id==id).first()
-	form_article=forms.CreateArticle(request.form)
+	form_article=forms.CreateArticleAdmin(request.form)
 	#Aqui le envios las categoria y tag a mi select	
 	form_article.category.choices = [(category.id, category.name) for category in Categories.query.all()]
 	form_article.tag.choices = [(tag.id, tag.name) for tag in Tags.query.all()]

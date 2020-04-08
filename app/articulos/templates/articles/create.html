@@ -51,3 +51,18 @@
 		</form>
 	</div>				
 {% endblock %}
+
+{% block js %}
+  <script type="text/javascript">
+    $(document).ready(function(){
+    	var error=$("#images").siblings("div.red")
+    	
+    	if(error!=null){
+			$("#images").siblings("div.red").remove()
+			$(".file-path-wrapper").append(error)
+    	}
+    	//console.log(error)
+
+    });
+  </script>
+{% endblock %}

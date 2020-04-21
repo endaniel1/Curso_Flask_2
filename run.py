@@ -6,10 +6,10 @@ from flask_script import Manager,Server
 
 app = create_app()
 csrf=CsrfProtect()
-migrate = Migrate(app,db)
-manager = Manager(app)
-manager.add_command('db', MigrateCommand)
-manager.add_command("runserver", Server(port=8080))
+migrate = Migrate(app,db)#Aqui para las migraciones
+manager = Manager(app)#Aqui para q tenga los comando
+manager.add_command('db', MigrateCommand)#Añadimos aqui el comando db
+manager.add_command("runserver", Server(port=8080))#Añadimos aqui el comando runserver
 
 if __name__ == '__main__':
 
@@ -18,4 +18,4 @@ if __name__ == '__main__':
 		db.create_all()#Aqui con la clase create_all() creamos nuestras tablas
 	
 	csrf.init_app(app)
-	manager.run()
+	manager.run()#Aqui de esta manera iniciamos la aplicacion

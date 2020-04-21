@@ -1,4 +1,5 @@
 import os
+
 def deleteImagen(deleteArticles):
 	dir_imagenes=os.path.dirname(os.path.abspath(__file__))+"/articulos/templates/images/"
 	

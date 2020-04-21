@@ -1,23 +1,24 @@
+#Para manipulacion de archivos
 import os
 from werkzeug.utils import secure_filename
-
+from werkzeug.datastructures import CombinedMultiDict
+#Lo basico de y para flask
 from flask import Flask,render_template,request,session,url_for,redirect
 
 from . import article #Aqui el blueprints 
 
 from flask import flash #Aqui para los mensajes 
-
+#Los modelos
 from models import db
 from models import Articles
 from models import Users
 from models import Categories
 from models import Tags
 from models import Images
-from app import forms
+from app import forms #Aqui formularios
 
-from werkzeug.datastructures import CombinedMultiDict
-from run import app
-import datetime
+from run import app #Aqui nuestras app
+import datetime #Aqui para manipulacion de fechas
 
 @article.route("/articulos/",methods=["GET"])
 @article.route("/articulos/<int:page>",methods=["GET"])
@@ -48,12 +49,13 @@ def create_article():
 		article=Articles(form_article.title.data,
 							form_article.content.data,
 							user_id,
-							form_article.category.data)
+							form_article.category.data,
+							form_article.title.data)
 
 		db.session.add(article)#Creamos nuestro articulo
 		#Aqui lo asocioamos a nuestros tags
 		for tag in form_article.tag.data:
-			article.tag_id.append(Tags.query.get(tag))
+			article.tags.append(Tags.query.get(tag))
 		#Aqui  guardamos y creamos nuestra imagenes de nuestro articulo
 		for imagen in form_article.image.data:
 			time = datetime.datetime.today()#Obtenemos la fecha y hora 
@@ -119,17 +121,24 @@ def edit(id=id):
 	
 	if request.method == "POST" and form_article.validate():
 		
+		article_nuevo=Articles(form_article.title.data,
+							form_article.content.data,
+							article.user_id,
+							form_article.category.data,
+							form_article.title.data)
+		
 		db.session.query(Articles).filter(Articles.id==id).update({
-				"title":form_article.title.data,
-				"content":form_article.content.data,
-				"category_id":form_article.category.data
+				"title":article_nuevo.title,
+				"content":article_nuevo.content,
+				"category_id":article_nuevo.category_id,
+				"slug":article_nuevo.slug
 			}, synchronize_session = False)
 		
 
-		article.tag_id.clear()		
+		article.tags.clear()		
 
 		for tag in form_article.tag.data:
-			article.tag_id.append(Tags.query.get(tag))
+			article.tags.append(Tags.query.get(tag))
 	
 		db.session.commit()
 		
@@ -141,7 +150,7 @@ def edit(id=id):
 	#Aqui añado las cartegoria y los tags
 	form_article.category.default=article.category_id
 	form_article.content.default=article.content
-	form_article.tag.default=[(tag.id) for tag in article.tag_id]
+	form_article.tag.default=[(tag.id) for tag in article.tags]
 	form_article.process()
 
 	return render_template("articles/edit.html",title=title,form=form_article,article=article)

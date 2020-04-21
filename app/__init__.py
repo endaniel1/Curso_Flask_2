@@ -5,17 +5,9 @@ from flask import flash #Aqui para los mensajes
 def create_app():
     app = Flask(__name__)
     app.config.from_object(DevelopmentConfig)
-
-    
     
     @app.before_request
-    def before_request():
-
-    	"""if "username" not in session and request.endpoint in ["usuarios.home","usuarios.logout"]:
-    		error_message="Debe de iniciar Sección Primero!"
-    		flash(error_message)
-    		return redirect(url_for("auth.login"))
-    	el"""
+    def before_request():        
     	if "username" in session and request.endpoint in ["auth.login","auth.register"]:
     		error_message="Usted no Tiene acceso!"
     		flash(error_message)
@@ -23,8 +15,7 @@ def create_app():
 
     @app.route("/")
     def index():
-    	title="Home"
-    	return render_template("index.html",title=title)
+    	return redirect(url_for("front.index"))
 
     # Configuracion de los BluePrints
 	# BluePrints usuarios
@@ -46,6 +37,10 @@ def create_app():
     # BluePrints tag
     from .tags import tags as tags
     app.register_blueprint(tags)
+
+    # BluePrints tag
+    from .front import front as front
+    app.register_blueprint(front)
 
 
     return app

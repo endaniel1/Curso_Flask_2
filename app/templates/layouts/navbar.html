@@ -1,7 +1,13 @@
 <nav>
   <div class="nav-wrapper">
-    <a href="#!" class="brand-logo">Logo</a>
-    <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+    {% if session["username"] %}      
+      <a href="{{url_for('usuarios.home')}}" class="brand-logo"><li class="material-icons">chevron_left</li>Regresar</a>
+      {% else %}
+        <a href="#!" class="brand-logo">Logo</a>
+        <a href="#" data-target="mobile-demo" class="sidenav-trigger"><i class="material-icons">menu</i></a>
+    {% endif %}
+    
+
 	{% if session["username"] %}
 		<ul id="nav-mobile" class="right hide-on-med-and-down">
       		{% if session["type"] == "admin"%}

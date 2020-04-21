@@ -1,0 +1,129 @@
+{% extends "layouts/main.html" %}
+
+{% block content %}
+
+	<div class="section">
+		<div class="container">
+			<div class="row">
+      			<div class="col s5 right-align">
+      				<p><i class="medium material-icons">home</i></p>
+      			</div>
+				<div class="col s7 left-align">
+					<p>
+						<h4>Vista Principal</h4>
+					</p>
+				</div> 
+    		</div>
+    		<div class="divider"></div> 
+    	</div>   
+  	</div>
+  	<div class="section">
+  		<div class="row">
+  			<div class="col s6 offset-s1">
+  				<div class="col s12 center-align">
+            <h4>Ultimos Articulos</h4>
+              <div class="row">
+                {% for article in articles.items %}
+                  <div class="col s4">
+                    <div class="card sticky-action">
+                      <div class="card-image waves-effect waves-block waves-light">
+                        <img class="activator" src="{{url_for('front.send_file',filename=article.Articles.images[0].name)}}">
+                      </div>
+                      <div class="card-content">
+                        <span class="card-title activator grey-text text-darken-4">{{article.Articles.title}}<i class="material-icons right">more_vert</i></span>
+                        <p><a href="{{url_for('front.viewarticles',slug=article.Articles.slug)}}">Ver más...</a></p>
+                      </div>
+                      <div class="card-reveal">
+                        <span class="card-title grey-text text-darken-4">{{article.Articles.title}}<i class="material-icons right">close</i></span>
+                        <p class="justified-align">{{article.Articles.content[0:70]}}</p>
+                        <p><a href="{{url_for('front.viewarticles',slug=article.Articles.slug)}}">Más Detalles...</a></p>
+                      </div>
+                      <div class="card-action">
+                        <a href="{{url_for('front.category',category=article.name)}}">{{article.name}}</a>
+                      </div>
+                    </div>
+                  </div>
+                  {% else %}
+                  <h2>No Articulos Relacionados..! </h2>   
+                {% endfor %}   
+                
+              </div>
+  				</div>
+          <div class="col s12">
+            <div class="row">
+              <ul class="pagination center-align">
+                
+                {% if articles.has_prev %}
+                  <li class="waves-effect"><a href="{{ articles.prev_num}}"><i class="material-icons">chevron_left</i></a></li>
+                  {% else %}
+                    <li class="disabled"><i class="material-icons">chevron_left</i></li>
+                {% endif %}
+                {% for page_num in articles.iter_pages() %}
+                  {% if page_num %}
+                    {% if page_num != articles.page %}
+                      <li class="waves-effect"><a href="{{page_num}}">{{page_num}}</a></li>
+                      {% else %}
+                        <li class="active disabled" style='color: #444;display: inline-block;font-size: 1.2rem;padding: 0 10px;line-height: 30px;'>{{page_num}}</li>
+                    {% endif %}
+                    {% else %}
+                      <li class="disabled" style='color: #444;display: inline-block;font-size: 1.2rem;padding: 0 10px;line-height: 30px;'>…</li>
+                  {% endif %}
+                {% endfor %}     
+
+                {% if articles.has_next %}
+                  <li class="waves-effect"><a href="{{ articles.next_num}}"><i class="material-icons">chevron_right</i></a></li>
+                  {% else %}
+                    <li class="disabled"><i class="material-icons">chevron_right</i></li>
+                {% endif %}
+                
+              </ul>
+            </div>
+          </div>
+  			</div>
+  			<div class="col s5 center-align">
+  				<div class="container">
+  					<div class="row">
+  						<div class="col s12">
+  							<div class="card teal">  	
+  								<div class="card-header">
+  									<ul class="collection with-header">
+  										<li class="collection-header"><h5><li class="medium material-icons">local_offer</li> Categorias</h5></li>
+  									</ul>
+  								</div>
+  								<div class="card-content" style="padding: 14px">
+  									<div class="collection" style="margin: auto;">
+                      {% for category in categories %}
+                        <a href="{{url_for('front.category',category=category.name)}}" class="collection-item  center-align">{{category.name}}
+                          <span class="new badge btn-floating" data-badge-caption="">{{category.articles.all() | length }}</span>
+                        </a>      
+                      {% endfor %}  										
+  									</div>
+  								</div>
+  							</div>
+  						</div>
+  					</div>			
+  				</div>	
+          <div class="container">
+            <div class="row">
+              <div class="col s12">
+                <div class="card-panel blue darken-4">
+                  <div class="card-content white-text">
+                    <span class="card-title white-text">Tags</span>
+                    <div class="divider"></div>
+                    <p class="">
+                      {% for tag in tags %}
+                        | <a href="{{url_for('front.tag',tag=tag.name)}}" class="light-green accent-1">{{tag.name}}</a> |
+                      {% endfor %}
+                    </p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>	
+  			</div>  		
+  		</div>
+      
+  	</div>
+  	
+
+{% endblock %}

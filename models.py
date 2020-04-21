@@ -31,7 +31,7 @@ class Users(db.Model):
 class Categories(db.Model):
 	id=db.Column(db.Integer,primary_key=True)
 	name=db.Column(db.String(50),nullable=True)
-	articles=db.relationship("Articles", backref='categories',cascade="all, delete-orphan")
+	articles=db.relationship("Articles", backref='categories',cascade="all, delete-orphan",lazy="dynamic")
 
 	#Aqui iniciamos nuestro construtor para q tenga los datos
 	def __init__(self, name):
@@ -43,19 +43,25 @@ class Articles(db.Model):
 	content=db.Column(db.Text())
 	user_id=db.Column(db.Integer,db.ForeignKey("users.id",ondelete="CASCADE"),nullable=True)
 	category_id=db.Column(db.Integer,db.ForeignKey("categories.id",ondelete="CASCADE"),nullable=True)
-	tag_id=db.relationship("Tags",secondary="article_tag")
+	slug=db.Column(db.String(150),nullable=True)
+	tags=db.relationship("Tags",secondary="article_tag")
 	images=db.relationship("Images",backref="articles",cascade="all, delete-orphan")
 
-	def __init__(self, title, content,user_id,category_id):		
+	def __init__(self, title, content,user_id,category_id,slug):		
 		self.title = title
 		self.content = content
 		self.user_id = user_id
 		self.category_id = category_id
+		self.slug=self.__create_slug(slug)
+
+	def __create_slug(self,slug):
+		generate_slug=slug.strip().lower().replace(" ","-")
+		return generate_slug
 
 class Tags(db.Model):
 	id=db.Column(db.Integer,primary_key=True)
 	name=db.Column(db.String(50),nullable=True)
-	articles=db.relationship("Articles",secondary="article_tag")
+	articles=db.relationship("Articles",secondary="article_tag",lazy="dynamic")
 
 	def __init__(self, name):
 		self.name=name
